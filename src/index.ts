@@ -5,6 +5,9 @@ import cookieParser from 'cookie-parser';
 import compression from 'compression';
 import cors from 'cors';
 import mongoose from 'mongoose';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const app = express();
 
@@ -22,7 +25,7 @@ server.listen(3000, () => {
     console.log('Server is running on http://localhost:3000');
 });
 
-const MONGO_URL = 'mongodb+srv://xeddtech:Xeddtech_1990@clusterelearningtrainin.unpzxml.mongodb.net/rest_api_node_typescript?retryWrites=true&w=majority&appName=ClusterElearningTrainingReactNode';
+const MONGO_URL = process.env.MONGO_URL;
 
 mongoose.Promise = Promise;
 mongoose.connect(MONGO_URL);
