@@ -1,16 +1,5 @@
-import mongoose from "mongoose";
+import {UserModel} from "../models/users.js";
 
-const UserSchema = new mongoose.Schema({
-    username: { type: String, required: true, unique: true },
-    email: { type: String, required: true, unique: true },
-    authentication: {
-        password: { type: String, required: true, select: false },
-        salt: { type: String, select: false },
-        sessionToken: { type: String, select: false },
-    },
-});
-
-export const UserModel = mongoose.model('User', UserSchema);
 export const getUsers = () => UserModel.find();
 export const getUserById = (id: string) => UserModel.findById(id);
 export const getUserByEmail = (email: string) => UserModel.findOne({ email });
