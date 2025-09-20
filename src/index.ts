@@ -15,10 +15,14 @@ const app = express();
 app.use(cors({
     credentials: true,
 }));
-
 app.use(compression());
-app.use(bodyParser.json());
 app.use(cookieParser());
+
+app.use(bodyParser.json());
+// to support URL-encoded bodies
+app.use(bodyParser.urlencoded({ extended: true }));
+
+app.use('/', router());
 
 const server = http.createServer(app);
 
@@ -35,5 +39,3 @@ mongoose.connect(MONGO_URL).then(r => {
 mongoose.connection.on('error', (error: Error) => {
     console.log(error);
 });
-
-app.use('/', router());
