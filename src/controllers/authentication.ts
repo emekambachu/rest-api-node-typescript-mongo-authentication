@@ -6,19 +6,19 @@ export const login = async (req: express.Request, res: express.Response) => {
     try {
         const {email, password} = req.body;
         if(!email || !password){
-            return res.sendStatus(400);
+            return res.status(403).json({error: 'Invalid email or password'});
         }
 
         const user = await getUserByEmail(email).select('+authentication.password +authentication.salt');
         if(!user){
             console.log('User does not exist');
-            return res.sendStatus(400);
+            return res.status(403).json({error: 'User does not exist'});
         }
 
         const expectedHash = authentication(user.authentication.salt, password);
         if(expectedHash !== user.authentication.password){
             console.log('Invalid password');
-            return res.sendStatus(403);
+            return res.status(403).json({error: 'Invalid password'});
         }
 
         const salt = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
@@ -35,7 +35,7 @@ export const login = async (req: express.Request, res: express.Response) => {
 
     } catch (e) {
         console.log(e);
-        return res.sendStatus(400);
+        return res.status(403).json({error: 'Server error, something went wrong'});
     }
 }
 
@@ -43,7 +43,7 @@ export const register = async (req: express.Request, res: express.Response) => {
     try{
         const {email, password, username} = req.body;
         if (!email || !password || !username) {
-            return res.sendStatus(400);
+            return res.status(403).json({error: 'Invalid registration data'});
         }
 
         const existingUser = await getUserByEmail(email);
@@ -51,7 +51,9 @@ export const register = async (req: express.Request, res: express.Response) => {
 
         if (existingUser || existingUsername) {
             console.log('User already exist');
-            return res.sendStatus(400); // Conflict - User already exists
+            return res.status(403).json({
+                error: 'User already exists'
+            }); // Conflict - User already exists
         }
 
         const salt = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
@@ -67,6 +69,6 @@ export const register = async (req: express.Request, res: express.Response) => {
 
     }catch(e){
         console.log(e);
-        return res.sendStatus(400);
+        return res.status(403).json({error: 'Server error, something went wrong'});
     }
 }
